@@ -21,8 +21,16 @@ RUN apt-get install -y python3 python3-pip
 # Install git
 RUN apt-get install -y git
 
+# Install curl
+RUN apt-get install -y curl
+
 # Install nodejs and npm
-RUN apt-get install -y nodejs npm
+RUN apt-get install -y ca-certificates gnupg
+RUN mkdir -p /etc/apt/keyrings
+RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+RUN apt-get update
+RUN apt-get install -y nodejs
 
 # Install jdk 17
 RUN apt-get install -y openjdk-17-jdk
@@ -44,9 +52,6 @@ RUN apt-get install -y docker-compose
 
 # Install zip and unzip
 RUN apt-get install -y zip unzip
-
-# Install curl
-RUN apt-get install -y curl
 
 # Prep the Python environment
 RUN python3 -m pip install --upgrade pip
