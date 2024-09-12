@@ -10,7 +10,7 @@
 # - AWS SAM CLI
 # - Google Cloud SDK
 
-FROM ubuntu:latest
+FROM ubuntu:22.04
 
 # Update oneself
 RUN apt-get update && apt-get upgrade -y
