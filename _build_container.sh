@@ -24,24 +24,18 @@ else
   argument="$1"
 fi
 
-versionNumber="v1.4"
+versionNumber="v1.5"
 
 # If on Linux, as opposed to Docker Desktop, use the following command to Enable buildx
 docker buildx create --use
 docker buildx inspect --bootstrap
 
 # docker build -t tonymasse/$argument:v1.4 -t tonymasse/$argument:latest ./ $@
-docker buildx build --platform linux/amd64,linux/arm64 -t tonymasse/base_dev:v1.5 -t tonymasse/base_dev:latest ./ --load
+docker buildx build --platform linux/amd64,linux/arm64 -t tonymasse/base_dev:v1.5 -t tonymasse/base_dev:latest ./ --load $@
 
 if [[ "$*" == *--publish* ]]; then
-  echo "### Creating then publishing image \`$argument\` to Docker Hub..."
-  docker buildx build --platform linux/amd64,linux/arm64 -t tonymasse/$argument:$versionNumber -t tonymasse/$argument:latest ./ --push $@
-
-  # echo "### Publishing image \`$argument\` to Docker Hub..."
-  # docker push --all-tags tonymasse/$argument
-else
-  echo "### Creating image \`$argument\`..."
-  docker buildx build --platform linux/amd64,linux/arm64 -t tonymasse/$argument:$versionNumber -t tonymasse/$argument:latest ./ --load $@
+  echo "### Publishing image \`$argument\` to Docker Hub..."
+  docker push --all-tags tonymasse/$argument
 fi
 
 echo "### Done."
