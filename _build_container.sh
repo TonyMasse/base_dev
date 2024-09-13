@@ -26,16 +26,21 @@ fi
 
 versionNumber="v1.5"
 
-# If on Linux, as opposed to Docker Desktop, use the following command to Enable buildx
-docker buildx create --use
+# Build the builder
+echo "### Build the container builder..."
+docker buildx create --name container-builder --driver docker-container --use
 docker buildx inspect --bootstrap
 
-# docker build -t tonymasse/$argument:v1.4 -t tonymasse/$argument:latest ./ $@
-docker buildx build --platform linux/amd64,linux/arm64 -t tonymasse/base_dev:v1.5 -t tonymasse/base_dev:latest ./ --load $@
+
+echo "### Building image \`$argument\` ($versionNumber)..."
+docker buildx build --platform linux/amd64,linux/arm64 -t tonymasse/$argument:$versionNumber -t tonymasse/$argumentv:latest ./ --load $@
+
 
 if [[ "$*" == *--publish* ]]; then
-  echo "### Publishing image \`$argument\` to Docker Hub..."
-  docker push --all-tags tonymasse/$argument
+  echo "### Publishing image \`$argument:$versionNumber\` to Docker Hub..."
+  docker push tonymasse/$argumentv:$versionNumber
+  echo "### Publishing image \`$argument:latest\` to Docker Hub..."
+  docker push tonymasse/$argument:latest
 fi
 
 echo "### Done."
